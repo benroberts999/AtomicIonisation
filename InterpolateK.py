@@ -16,6 +16,7 @@ def log_space_interp(X, Y, Z):
     return interped_func
 
 
+# filename = "testdata_mat.txt"
 filename = "K_Xe_v_6_hp_orth_mat.txt"
 
 text_file = open(filename).read()
@@ -42,7 +43,7 @@ Kion = log_space_interp(E_array, q_array, K_array)
 
 # Check to see if interpolation working:
 # Just for testing: use a slightly different q-grid for interp'd function:
-q0, qmax = 0.8*min(q_array), 1.2*max(q_array)
+q0, qmax = min(q_array), max(q_array)
 q_array_2 = np.logspace(np.log10(q0), np.log(qmax), 300)
 
 plt.xscale('log')
@@ -51,7 +52,12 @@ for iE, E in enumerate(E_array):
     plt.plot(q_array, K_array[iE], label="E="+str(E))
     if (iE+1 < len(K_array)):
         E2 = np.exp(0.5*(np.log(E) + np.log(E_array[iE+1])))
-        plt.plot(q_array_2, Kion(E2, q_array_2), ':', label="E=" +
+        plt.plot(q_array, Kion(E2, q_array), ':', label="E=" +
                  str(E))
 leg = plt.legend(loc='best')
 plt.show()
+
+
+# Electron-impact cross-section:
+
+# sigma= (4*pi/E) Int_0^E dE Int_q0^qmax K(E,q)/q^3

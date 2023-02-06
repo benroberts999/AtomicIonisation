@@ -1,0 +1,136 @@
+
+********************************************************************************
+AMPSCI v: 0.0 [Ionisation/4431b59]
+Parallel: Using OpenMP with 24 threads.
+Compiled: g++ [Ubuntu 11.3.0-1ubuntu1~22.04] 11.3.0 2023-02-06 18:07 AEST
+Run time: 2023-02-06 18:07:27
+
+********************************************************************************
+Atom { Z = Xe; }
+HartreeFock { core = [Xe]; }
+Grid { 
+  r0 = 1e-7;
+  rmax = 50.0;
+  num_points = 50000;
+  b = 2.0;
+}
+Basis { 
+  number = 40;
+  order = 7;
+  r0_eps = 1.0e-7;
+  rmax = 30.0;
+  print = false;
+  states = 35spdf;
+  print = false;
+}
+Module::Kionisation { 
+  E_range = 0.013,10.0;
+  E_steps = 64;
+  q_range = 0.001,5.0;
+  q_steps = 256;
+  max_L = 6;
+  rpa = false;
+  subtract_1 = false;
+  force_rescale;
+  hole_particle;
+  force_orthog;
+  output_format = matrix,gnuplot;
+  units = Atomic;
+}
+
+Running for Xe, Z=54 A=131
+Fermi nucleus;  r_rms = 4.7808, c_hdr = 5.63781, t = 2.3
+Log-linear (b=2) grid: 1e-07->50, N=50000, du=0.00180124
+========================================================
+Hartree-Fock
+Core   :  it: 30 eps=3.9e-14 for 5p-
+
+Xe-131
+Core: [Xe] (V^N)
+     state  k   Rinf its   eps         En (au)        En (/cm)
+0   1s_1/2 -1    0.7  2  6e-30 -1277.257496697  -280325618.243
+1   2s_1/2 -1    1.7  2  7e-30  -202.465057588   -44435943.878
+2   2p_1/2  1    1.7  2  2e-29  -189.679756809   -41629894.703
+3   2p_3/2 -2    1.8  2  6e-30  -177.704545325   -39001639.577
+4   3s_1/2 -1    3.6  2  9e-29   -43.010455318    -9439703.826
+5   3p_1/2  1    3.8  2  8e-29   -37.659964607    -8265406.849
+6   3p_3/2 -2    4.0  2  5e-30   -35.325262943    -7752999.062
+7   3d_3/2  2    4.6  2  2e-29   -26.023365807    -5711468.617
+8   3d_5/2 -3    4.7  2  2e-29   -25.537096638    -5604744.871
+9   4s_1/2 -1    8.1  2  1e-29    -8.429919666    -1850153.511
+10  4p_1/2  1    9.3  2  7e-29    -6.452496083    -1416159.199
+11  4p_3/2 -2    9.7  2  1e-28    -5.982792982    -1313071.284
+12  4d_3/2  2   14.4  2  1e-29    -2.711332030     -595068.598
+13  4d_5/2 -3   14.6  2  1e-28    -2.633760703     -578043.659
+14  5s_1/2 -1   23.8  2  4e-30    -1.010138002     -221699.666
+15  5p_1/2  1   34.0  2  9e-31    -0.492572218     -108107.106
+16  5p_3/2 -2   36.0  2  1e-29    -0.439804880      -96526.014
+E_c = -7446.898972
+
+Constructing B-spline basis with N=40, k=7. Storing: 35spdf
+Using Derevianko (Duel Kinetic Balance) type splines.
+Spline cavity l=0 s: (1.0e-04, 30.0)aB.
+Spline cavity l=1 p: (1.0e-04, 30.0)aB.
+Spline cavity l=2 d: (3.0e-03, 30.0)aB.
+Spline cavity l=3 f: (3.0e-03, 30.0)aB.
+Basis/core:
+ |<4s+|4s+>-1| = 1.8e-06
+ dE/E(5s+)     = 5.6e-05
+ <4s+|21s+>    = 5.2e-04
+Basis/valence:
+Basis: T = 16.27 s
+
+--------------------------------------------------------------------------------
+Module: Module::Kionisation
+
+Summary of inputs:
+Energy  : [0.0, 10.0] keV    = [0.5, 367.5] au, in 64 steps
+Momentum: [0.001, 5.000] MeV = [0.3, 1340.9] au, in 256 steps
+
+Very rough guess at maximum safe q: 3488 au = 13.01 MeV
+Approx continuum wavelength for max E: 0.232.
+Approx dr at large r: 0.0018
+
+Max L   : 6  (multipolarity in e^iqr expansion)
+Using RPA (first-order), with basis: 35spdf
+Using: standard method
+
+Options:
+Subtracting HF self-interaction (account for hole-particle interaction)
+Explicitely enforcing orthogonality between bound and continuum states
+
+
+Core orbitals:
+        E(au)   E(keV)  N_el
+------- Inaccessible -------
+1s+  -1277.26  -34.756   2
+-------- Accessible --------
+2s+   -202.47   -5.509   2
+2p-   -189.68   -5.161   2
+2p+   -177.70   -4.836   4
+3s+    -43.01   -1.170   2
+3p-    -37.66   -1.025   2
+3p+    -35.33   -0.961   4
+3d-    -26.02   -0.708   4
+3d+    -25.54   -0.695   6
+4s+     -8.43   -0.229   2
+4p-     -6.45   -0.176   2
+4p+     -5.98   -0.163   4
+4d-     -2.71   -0.074   4
+4d+     -2.63   -0.072   6
+5s+     -1.01   -0.027   2
+5p-     -0.49   -0.013   2
+5p+     -0.44   -0.012   4
+
+Filling jL lookup table: done.
+Operator: jL
+Output files will use: Atomic units
+Calculating K(E,q) - ionisation factor
+Using: standard method
+2s+, 2p-, 2p+, 3s+, 3p-, 3p+, 3d-, 3d+, 4s+, 4p-, 4p+, 4d-, 4d+, 5s+, 5p-, 5p+, 
+
+Written to file: K_Xe_v_6_hp_orth
+
+Kionisation: T = 2.25 mins
+
+ampsci: T = 2.60 mins
