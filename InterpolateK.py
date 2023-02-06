@@ -45,21 +45,21 @@ print("Momentum transfer steps: ", len(q_array))
 # Create K(E,q) function by interpolation:
 Kion = log_space_interp(E_array, q_array, K_array)
 
-# Check to see if interpolation working:
-# Just for testing: use a slightly different q-grid for interp'd function:
-q0, qmax = min(q_array), max(q_array)
-q_array_2 = np.logspace(np.log10(q0), np.log(qmax), 300)
+# # Check to see if interpolation working:
+# # Just for testing: use a slightly different q-grid for interp'd function:
+# q0, qmax = min(q_array), max(q_array)
+# q_array_2 = np.logspace(np.log10(q0), np.log(qmax), 300)
 
-plt.xscale('log')
-plt.yscale('log')
-for iE, E in enumerate(E_array):
-    plt.plot(q_array, K_array[iE], label="E="+str(E))
-    if (iE+1 < len(K_array)):
-        E2 = np.exp(0.5*(np.log(E) + np.log(E_array[iE+1])))
-        plt.plot(q_array, Kion(E2, q_array), ':', label="E=" +
-                 str(E))
-leg = plt.legend(loc='best')
-plt.show()
+# plt.xscale('log')
+# plt.yscale('log')
+# for iE, E in enumerate(E_array):
+#     plt.plot(q_array, K_array[iE], label="E="+str(E))
+#     if (iE+1 < len(K_array)):
+#         E2 = np.exp(0.5*(np.log(E) + np.log(E_array[iE+1])))
+#         plt.plot(q_array, Kion(E2, q_array), ':', label="E=" +
+#                  str(E))
+# leg = plt.legend(loc='best')
+# plt.show()
 
 
 # Electron-impact cross-section:
@@ -95,8 +95,10 @@ def Esigma_impact(E_0, E_i, Kion):
 
     def h(q, dE):
         if dE < Emin or dE > Emax or q < Qmin or q > Qmax:
+            # don't extrapolate past ends of array
             return 0.0
         if dE > E_i:
+            # Energy conservation:
             return 0.0
         return Kion(dE, q)/(q**3)
 
@@ -109,7 +111,7 @@ def Esigma_impact(E_0, E_i, Kion):
 
 
 # es = np.linspace(10/27.211, 1000/27.211, 100)
-es = np.logspace(np.log10(10/27.211), np.log(1000/27.211), 25)
+es = np.logspace(np.log10(10/27.211), np.log(1000/27.211), 250)
 e_prev = 0.0
 Esigma_prev = 0.0
 y = []
