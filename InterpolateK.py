@@ -88,7 +88,7 @@ def sigma_impact2(E_i, Kion):
     return factor * a02 * quad(f, 0.0, E_i)[0]
 
 
-def sigma_impact_x_E(E_0, E_i, Kion):
+def Esigma_impact(E_0, E_i, Kion):
     """Units 10^-15 cm^2"""
     factor = 4*np.pi
     a02 = 0.0279841
@@ -96,19 +96,30 @@ def sigma_impact_x_E(E_0, E_i, Kion):
     def h(q, dE):
         if dE < Emin or dE > Emax or q < Qmin or q > Qmax:
             return 0.0
+        if dE > E_i:
+            return 0.0
         return Kion(dE, q)/(q**3)
 
     def qmin(dE): return np.sqrt(2*E_i) - np.sqrt(2*(E_i - dE))
     def qmax(dE): return np.sqrt(2*E_i) + np.sqrt(2*(E_i - dE))
-    res = dblquad(h, E_0, E_i, qmin, qmax, epsabs=1.0e-2, epsrel=1.0e-2)[0]
+    res = dblquad(h, E_0, E_i, qmin, qmax, epsabs=1.0e-6, epsrel=1.0e-3)[0]
     return factor * a02 * res
 
+# XXX this integral is too unstable!
 
-es = np.linspace(100/27.211, 1000/27.211, 5)
+
+# es = np.linspace(10/27.211, 1000/27.211, 100)
+es = np.logspace(np.log10(10/27.211), np.log(1000/27.211), 25)
 e_prev = 0.0
-s_prev = 0.0
+Esigma_prev = 0.0
+y = []
 for e in es:
-    s = s_prev + sigma_impact_x_E(e_prev, e, Kion)
+    Esig = Esigma_prev + Esigma_impact(e_prev, e, Kion)
     e_prev = e
-    s_prev = s
-    print(e*27.211, s/e)
+    Esigma_prev = Esig
+    y.append(Esig/e)
+    # print(e*27.211, s/e)
+
+plt.xscale('log')
+plt.plot(es*27.211, y)
+plt.show()
