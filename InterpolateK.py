@@ -3,6 +3,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 from io import StringIO  # StringIO behaves like a file object
 from scipy.interpolate import LinearNDInterpolator, CloughTocher2DInterpolator
+from scipy.integrate import dblquad, quad
 
 
 def log_space_interp(X, Y, Z):
@@ -30,6 +31,9 @@ E_array = np.loadtxt(StringIO(out[1]), comments='#')
 q_array = np.loadtxt(StringIO(out[2]), comments='#')
 K_array = np.loadtxt(StringIO(out[3]), comments='#')
 
+
+Emin, Emax = min(E_array), max(E_array)
+Qmin, Qmax = min(q_array), max(q_array)
 
 # check the data makes sense:
 assert len(K_array) == len(E_array)
@@ -61,3 +65,50 @@ plt.show()
 # Electron-impact cross-section:
 
 # sigma= (4*pi/E) Int_0^E dE Int_q0^qmax K(E,q)/q^3
+
+def integral_q(E_i, delta_E, Kion):
+    factor = 4*np.pi / E_i
+    if (delta_E > E_i):
+        return 0.0
+    qmin = np.sqrt(2*E_i) - np.sqrt(2*(E_i - delta_E))
+    qmax = np.sqrt(2*E_i) + np.sqrt(2*(E_i - delta_E))
+
+    def f(q):
+        return Kion(delta_E, q)/(q**3)
+    return quad(f, qmin, qmax)[0]
+
+
+def sigma_impact2(E_i, Kion):
+    """Units 10^-15 cm^2"""
+    factor = 4*np.pi / E_i
+    a02 = 2.79841
+
+    def f(delta_E):
+        return integral_q(E_i, delta_E, Kion)
+    return factor * a02 * quad(f, 0.0, E_i)[0]
+
+
+def sigma_impact_x_E(E_0, E_i, Kion):
+    """Units 10^-15 cm^2"""
+    factor = 4*np.pi
+    a02 = 0.0279841
+
+    def h(q, dE):
+        if dE < Emin or dE > Emax or q < Qmin or q > Qmax:
+            return 0.0
+        return Kion(dE, q)/(q**3)
+
+    def qmin(dE): return np.sqrt(2*E_i) - np.sqrt(2*(E_i - dE))
+    def qmax(dE): return np.sqrt(2*E_i) + np.sqrt(2*(E_i - dE))
+    res = dblquad(h, E_0, E_i, qmin, qmax, epsabs=1.0e-2, epsrel=1.0e-2)[0]
+    return factor * a02 * res
+
+
+es = np.linspace(100/27.211, 1000/27.211, 5)
+e_prev = 0.0
+s_prev = 0.0
+for e in es:
+    s = s_prev + sigma_impact_x_E(e_prev, e, Kion)
+    e_prev = e
+    s_prev = s
+    print(e*27.211, s/e)
