@@ -66,7 +66,7 @@ for iE, E in enumerate(E_array):
     if (iE+1 < len(K_array)):
         E2 = np.exp(0.5*(np.log(E) + np.log(E_array[iE+1])))
         plt.plot(q_array, Kion(E2, q_array), ':', label="E=" +
-                 str(E))
+                 str(E2))
 leg = plt.legend(loc='best')
 plt.show()
 
