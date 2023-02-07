@@ -148,4 +148,5 @@ for e in es:
 plt.xscale('log')
 # plt.plot(es*27.211, y)
 plt.plot(es*27.211, y2, label="full")
+leg = plt.legend(loc='best')
 plt.show()
