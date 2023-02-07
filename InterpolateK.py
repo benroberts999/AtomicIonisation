@@ -45,21 +45,21 @@ print("Momentum transfer steps: ", len(q_array))
 # Create K(E,q) function by interpolation:
 Kion = log_space_interp(E_array, q_array, K_array)
 
-# # Check to see if interpolation working:
-# # Just for testing: use a slightly different q-grid for interp'd function:
-# q0, qmax = min(q_array), max(q_array)
-# q_array_2 = np.logspace(np.log10(q0), np.log(qmax), 300)
+# Check to see if interpolation working:
+# Just for testing: use a slightly different q-grid for interp'd function:
+q0, qmax = min(q_array), max(q_array)
+q_array_2 = np.logspace(np.log10(q0), np.log(qmax), 300)
 
-# plt.xscale('log')
-# plt.yscale('log')
-# for iE, E in enumerate(E_array):
-#     plt.plot(q_array, K_array[iE], label="E="+str(E))
-#     if (iE+1 < len(K_array)):
-#         E2 = np.exp(0.5*(np.log(E) + np.log(E_array[iE+1])))
-#         plt.plot(q_array, Kion(E2, q_array), ':', label="E=" +
-#                  str(E))
-# leg = plt.legend(loc='best')
-# plt.show()
+plt.xscale('log')
+plt.yscale('log')
+for iE, E in enumerate(E_array):
+    plt.plot(q_array, K_array[iE], label="E="+str(E))
+    if (iE+1 < len(K_array)):
+        E2 = np.exp(0.5*(np.log(E) + np.log(E_array[iE+1])))
+        plt.plot(q_array, Kion(E2, q_array), ':', label="E=" +
+                 str(E))
+leg = plt.legend(loc='best')
+plt.show()
 
 
 # Electron-impact cross-section:
@@ -107,21 +107,45 @@ def Esigma_impact(E_0, E_i, Kion):
     res = dblquad(h, E_0, E_i, qmin, qmax, epsabs=1.0e-6, epsrel=1.0e-3)[0]
     return factor * a02 * res
 
+
+def sigma_impact(E_i, Kion):
+    """Units 10^-15 cm^2"""
+    factor = 4*np.pi/E_i
+    a02 = 0.0279841
+
+    def h(q, dE):
+        if dE < Emin or dE > Emax or q < Qmin or q > Qmax:
+            # don't extrapolate past ends of array
+            return 0.0
+        if dE > E_i:
+            # Energy conservation:
+            return 0.0
+        return Kion(dE, q)/(q**3)
+
+    def qmin(dE): return np.sqrt(2*E_i) - np.sqrt(2*(E_i - dE))
+    def qmax(dE): return np.sqrt(2*E_i) + np.sqrt(2*(E_i - dE))
+    res = dblquad(h, 0.0, E_i, qmin, qmax, epsabs=1.0e-3, epsrel=1.0e-2)
+    return factor * a02 * res[0]
+
 # XXX this integral is too unstable!
 
 
 # es = np.linspace(10/27.211, 1000/27.211, 100)
-es = np.logspace(np.log10(10/27.211), np.log(1000/27.211), 250)
+es = np.logspace(np.log10(10/27.211), np.log10(1000/27.211), 150)
 e_prev = 0.0
 Esigma_prev = 0.0
-y = []
+# y = []
+y2 = []
 for e in es:
-    Esig = Esigma_prev + Esigma_impact(e_prev, e, Kion)
-    e_prev = e
-    Esigma_prev = Esig
-    y.append(Esig/e)
+    # Esig = Esigma_prev + Esigma_impact(e_prev, e, Kion)
+    # e_prev = e
+    # Esigma_prev = Esig
+    # y.append(Esig/e)
+    sig = sigma_impact(e, Kion)
+    y2.append(sig)
     # print(e*27.211, s/e)
 
 plt.xscale('log')
-plt.plot(es*27.211, y)
+# plt.plot(es*27.211, y)
+plt.plot(es*27.211, y2, label="full")
 plt.show()
