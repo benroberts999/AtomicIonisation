@@ -3,6 +3,13 @@ import numpy as np
 from matplotlib import pyplot as plt
 from io import StringIO  # StringIO behaves like a file object
 
+"""
+An example for reading in the atomic ionisation factor, K(E,q) from _mat.txt file,
+which is output of ampsci Kionisation module.
+This one calculates integral directly on the grid.
+Not ideal, since it relies on details of grid.
+"""
+
 
 def sigmaE(Kion, Egrid, qgrid, Ei):
     """Calculates electron-impact ionisation x-section by direct integration. 

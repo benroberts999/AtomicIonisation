@@ -5,9 +5,19 @@ from io import StringIO  # StringIO behaves like a file object
 from scipy.interpolate import LinearNDInterpolator, CloughTocher2DInterpolator
 from scipy.integrate import dblquad, quad
 
+"""
+An example for reading in the atomic ionisation factor, K(E,q) from _mat.txt file,
+which is output of ampsci Kionisation module.
+This creates an interpolating function for K from the input matrix.
+Useful for making plots, but seems too slow to be that useful for integrals.
+Posisble that is just my bad python....
+"""
+
 
 def log_space_interp(X, Y, Z):
-    """Linear interpolation in the log scale. X is 1D array of size SX, Y is 1D array of size SY, and Z is a 2D array of size SX*SY. Z_ij = Z(X_i, Y_j)"""
+    """Linear interpolation in the log scale. X is 1D array of size SX, 
+    Y is 1D array of size SY, and Z is a 2D array of size SX*SY. 
+    Z_ij = Z(X_i, Y_j)"""
     xx, yy = np.meshgrid(X, Y)
     interp_log = LinearNDInterpolator(list(zip(np.log(xx.flatten('F')), np.log(
         yy.flatten('F')))), np.log(Z.flatten()))
@@ -21,7 +31,6 @@ def log_space_interp(X, Y, Z):
 filename = "K_Xe_v_6_hp_orth_mat.txt"
 
 text_file = open(filename).read()
-# print(text_file)
 out = text_file.split('\n\n')
 
 # check the data makes sense:
@@ -66,50 +75,11 @@ plt.show()
 
 # sigma= (4*pi/E) Int_0^E dE Int_q0^qmax K(E,q)/q^3
 
-def integral_q(E_i, delta_E, Kion):
-    factor = 4*np.pi / E_i
-    if (delta_E > E_i):
-        return 0.0
-    qmin = np.sqrt(2*E_i) - np.sqrt(2*(E_i - delta_E))
-    qmax = np.sqrt(2*E_i) + np.sqrt(2*(E_i - delta_E))
-
-    def f(q):
-        return Kion(delta_E, q)/(q**3)
-    return quad(f, qmin, qmax)[0]
-
-
-def sigma_impact2(E_i, Kion):
-    """Units 10^-15 cm^2"""
-    factor = 4*np.pi / E_i
-    a02 = 2.79841
-
-    def f(delta_E):
-        return integral_q(E_i, delta_E, Kion)
-    return factor * a02 * quad(f, 0.0, E_i)[0]
-
-
-def Esigma_impact(E_0, E_i, Kion):
-    """Units 10^-15 cm^2"""
-    factor = 4*np.pi
-    a02 = 0.0279841
-
-    def h(q, dE):
-        if dE < Emin or dE > Emax or q < Qmin or q > Qmax:
-            # don't extrapolate past ends of array
-            return 0.0
-        if dE > E_i:
-            # Energy conservation:
-            return 0.0
-        return Kion(dE, q)/(q**3)
-
-    def qmin(dE): return np.sqrt(2*E_i) - np.sqrt(2*(E_i - dE))
-    def qmax(dE): return np.sqrt(2*E_i) + np.sqrt(2*(E_i - dE))
-    res = dblquad(h, E_0, E_i, qmin, qmax, epsabs=1.0e-6, epsrel=1.0e-3)[0]
-    return factor * a02 * res
-
 
 def sigma_impact(E_i, Kion):
     """Units 10^-15 cm^2"""
+    # nb: this is eneficient, since the first part of the integral is
+    # repeated many times...
     factor = 4*np.pi/E_i
     a02 = 0.0279841
 
@@ -130,23 +100,15 @@ def sigma_impact(E_i, Kion):
 # XXX this integral is too unstable!
 
 
-# es = np.linspace(10/27.211, 1000/27.211, 100)
 es = np.logspace(np.log10(10/27.211), np.log10(1000/27.211), 150)
 e_prev = 0.0
 Esigma_prev = 0.0
-# y = []
-y2 = []
+y = []
 for e in es:
-    # Esig = Esigma_prev + Esigma_impact(e_prev, e, Kion)
-    # e_prev = e
-    # Esigma_prev = Esig
-    # y.append(Esig/e)
     sig = sigma_impact(e, Kion)
-    y2.append(sig)
-    # print(e*27.211, s/e)
+    y.append(sig)
 
 plt.xscale('log')
-# plt.plot(es*27.211, y)
-plt.plot(es*27.211, y2, label="full")
+plt.plot(es*27.211, y, label="full")
 leg = plt.legend(loc='best')
 plt.show()
