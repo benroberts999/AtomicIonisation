@@ -2,6 +2,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy import constants
 
+# Using SHM for velocity dist
+# Ignoring annual modulation and errors atm
+
 # galactic escape velocity [1804.01231]
 v_esc = 550.
 # ~Error in VESV: Range: 498 - 608
@@ -67,6 +70,7 @@ def norm_fv():
         v = v + dv
     return 1.0 / (A * dv)
 
+# need to add error terms
 def fv_array():
     arr_fv = []
     arr_v = []
@@ -79,12 +83,14 @@ def fv_array():
         vkms = v * v_au_to_kms
         arr_v.append(vkms)
         arr_fv.append(norm_const * fv_veldist(vkms,0,0,0))
-    return arr_fv, arr_v
+    return arr_fv, arr_v, dv
 
-veldist, vel = fv_array()
-print(veldist)
+# veldist, vel, dv = fv_array()
+# veldist = np.array(veldist)
+# vel = np.array(vel)
+# print(veldist)
 
-plt.plot(vel, veldist)
-plt.xlim([0,1000])
-plt.ylim([0,0.004])
-plt.show()
+# plt.plot(vel, veldist)
+# plt.xlim([0,1000])
+# plt.ylim([0,0.004])
+# plt.show()
