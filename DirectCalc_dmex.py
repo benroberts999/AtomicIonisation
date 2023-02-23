@@ -56,13 +56,14 @@ def dsvdE_Evmvmx(Kion, Egrid, qgrid, mv, mx, arr_fv, dv):
         temp = 0.0
         v = dv
         for iv in range(vsteps):
-            temp += dsdE_Evmvmx(Kion, E, ide, qgrid, v, mv, mx)
+            temp += dsdE_Evmvmx(Kion, E, ide, qgrid, v, mv, mx) * v * arr_fv[iv]
             v += dv
         dsvdE_array.append(temp * dv)
     return dsvdE_array
 
 # filename = "testdata_mat.txt"
-filename = "K_Xe_v_6_hp_orth_mat.txt"
+# filename = "K_Xe_v_6_hp_orth_mat.txt"
+filename = "/home/uqcashle/ampsci/K_Xe_v_6_hp_orth_testdmex_q5_mat.txt"
 
 text_file = open(filename).read()
 out = text_file.split('\n\n')
@@ -86,7 +87,11 @@ print(len(K_array), len(K_array[0]))
 
 fv_array, v_array, dv = SHM.fv_array()
 print(len(fv_array))
-dsvde_array = dsvdE_Evmvmx(K_array[:,:], E_array[:], q_array[:], 0.0, 1.0, fv_array, dv)
+dsvde_array = dsvdE_Evmvmx(K_array, E_array, q_array, 0.0, 10.0, fv_array, dv)
+
+with open('dmex_py_20230223.txt','w') as f:
+    for i in range(len(E_array)):
+        print(str(E_array[i]*27.211) + " " + str(dsvde_array[i]), file=f)
 
 plt.xscale('log')
 plt.yscale('log')

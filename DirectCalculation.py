@@ -2,6 +2,7 @@
 import numpy as np
 from matplotlib import pyplot as plt
 from io import StringIO  # StringIO behaves like a file object
+import sys
 
 """
 An example for reading in the atomic ionisation factor, K(E,q) from _mat.txt file,
@@ -36,7 +37,7 @@ def sigmaE(Kion, Egrid, qgrid, Ei):
         if Et >= Ei:
             continue
         qminus = np.sqrt(2 * Ei) - np.sqrt(2 * (Ei - Et))
-        qplus = np.sqrt(Ei) + np.sqrt(Ei - Et)
+        qplus = np.sqrt(2 * Ei) + np.sqrt(2 * (Ei - Et))
         for iq in range(qsteps):
             q = qgrid[iq]
             if q < qminus or q > qplus:
@@ -51,7 +52,8 @@ def sigmaE(Kion, Egrid, qgrid, Ei):
 
 
 # filename = "testdata_mat.txt"
-filename = "K_Xe_v_6_hp_orth_mat.txt"
+# filename = "K_Xe_v_6_hp_orth_mat.txt"
+filename = "/home/uqcashle/ampsci/K_Xe_v_6_hp_orth_testimpact_q5_mat.txt"
 
 text_file = open(filename).read()
 out = text_file.split('\n\n')
@@ -70,7 +72,8 @@ assert len(K_array[0]) == len(q_array)
 print("Energy deposition steps: ", len(E_array))
 print("Momentum transfer steps: ", len(q_array))
 
-es = np.logspace(np.log10(10/27.211), np.log10(1000/27.211), 150)
+# es = np.logspace(np.log10(10/27.211), np.log10(1000/27.211), 300)
+es = np.array(E_array)
 e_prev = 0.0
 Esigma_prev = 0.0
 # y = []
@@ -79,6 +82,10 @@ y3 = []
 for e in es:
     sig2 = sigmaE(K_array, E_array, q_array, e)
     y3.append(sig2)
+
+with open('impact_py_20230223.txt','w') as f:
+    for i in range(len(es)):
+        print(str(es[i]*27.211) + " " + str(y3[i]), file=f)
 
 plt.xscale('log')
 plt.plot(es*27.211, y3, label="direct")
