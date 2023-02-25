@@ -82,7 +82,7 @@ def fv_array():
         v = (iv + 1) * dv
         vkms = v * v_au_to_kms
         arr_v.append(vkms)
-        arr_fv.append(norm_const * fv_veldist(vkms,0,0,0))
+        arr_fv.append(norm_const * fv_veldist(vkms,0,0,0) / (1. / v_au_to_kms))
     return arr_fv, arr_v, dv
 
 # veldist, vel, dv = fv_array()

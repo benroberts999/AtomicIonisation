@@ -68,7 +68,7 @@ for iE, E in enumerate(E_array):
         plt.plot(q_array, Kion(E2, q_array), ':', label="E=" +
                  str(E2))
 leg = plt.legend(loc='best')
-plt.show()
+# plt.show()
 
 
 # Electron-impact cross-section:
@@ -107,6 +107,11 @@ y = []
 for e in es:
     sig = sigma_impact(e, Kion)
     y.append(sig)
+
+# with open('impact_py_quad.txt','w') as f:
+#     for i in range(len(es)):
+#         print(str(es[i]*27.211) + " " + str(y[i]), file=f)
+
 
 plt.xscale('log')
 plt.plot(es*27.211, y, label="full")
