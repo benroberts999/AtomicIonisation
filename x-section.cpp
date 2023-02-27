@@ -10,6 +10,7 @@
 
 const double V_to_kms = (PhysConst::c_SI / PhysConst::c) / 1000.0;
 const double M_to_GeV = PhysConst::m_e_MeV / 1000.0;
+const double au_to_eV = PhysConst::Hartree_eV;
 
 //==============================================================================
 //! Reads E grid, q grid, and Kion(E,q) from '_mat' formatted text file. Note:
@@ -142,6 +143,61 @@ std::vector<double> dsvdE(const LinAlg::Matrix<double> Kion, double mx,
 }
 
 //==============================================================================
+//! Calculates total cross-section for given electron energy, Ei
+//! in units of 10^-15 cm^2
+double sigtot_E(const LinAlg::Matrix<double> Kion,
+                const std::vector<double> &E_grid,
+                const std::vector<double> &q_grid, double Ei) {
+  double sigtot = 0.0;
+
+  auto Emin = E_grid.at(0);
+  auto Emax = E_grid.at(E_grid.size() - 1);
+  auto qmin = q_grid.at(0);
+  auto qmax = q_grid.at(q_grid.size() - 1);
+
+  auto duE = std::log((Emax / Emin) / (double)(E_grid.size() - 1));
+  auto duQ = std::log((qmax / qmin) / (double)(q_grid.size() - 1));
+
+  for (std::size_t iE = 0; iE < E_grid.size(); iE++) {
+    auto E = E_grid.at(iE);
+    if (E >= Ei)
+      continue;
+    double qminus = std::sqrt(2.0 * Ei) - std::sqrt(2.0 * (Ei - E));
+    double qplus = std::sqrt(2.0 * Ei) + std::sqrt(2.0 * (Ei - E));
+    for (std::size_t iq = 0; iq < q_grid.size(); iq++) {
+      double q = q_grid.at(iq);
+      if (q < qminus || q > qplus)
+        continue;
+      double dEdq = E * q * duE * duQ;
+      double FX2 = 1.0 / (q * q * q);
+      sigtot += dEdq * FX2 * Kion(iE, iq);
+    }
+  }
+  // double a02 = 0.0279841;
+  double a02 = PhysConst::aB_cm * PhysConst::aB_cm;
+  return (4.0 * M_PI * a02 / Ei) * sigtot;
+}
+
+//==============================================================================
+//! Calculates total cross-section as function of incoming electron energy
+//! in units of
+std::vector<double> sigtot(const LinAlg::Matrix<double> Kion,
+                           const std::vector<double> &E_grid,
+                           const std::vector<double> &q_grid) {
+  assert(Kion.rows() == E_grid.size());
+  assert(Kion.cols() == q_grid.size());
+
+  std::vector<double> sig_vec;
+  sig_vec.reserve(E_grid.size());
+  for (std::size_t iE = 0; iE < E_grid.size(); iE++) {
+    auto Ei = E_grid.at(iE);
+    double tmp = sigtot_E(Kion, E_grid, q_grid, Ei);
+    sig_vec.push_back(tmp);
+  }
+  return sig_vec;
+}
+
+//==============================================================================
 //==============================================================================
 //==============================================================================
 int main(int argc, char *argv[]) {
@@ -189,10 +245,25 @@ int main(int argc, char *argv[]) {
   // calculate <ds.v>/dE
   const auto dsvde = dsvdE(Kion, mx, Fx2, E_grid, q_grid, Fv, 1000);
 
-  // For now, just output to screen
+  // // For now, just output to screen
+  // for (std::size_t i = 0; i < dsvde.size(); ++i) {
+  //   std::cout << E_grid[i] << " " << dsvde[i] << "\n";
+  // }
+
+  // calculate sig(E) for e-e impact ion
+  const auto sig_impact = sigtot(Kion, E_grid, q_grid);
   for (std::size_t i = 0; i < dsvde.size(); ++i) {
-    std::cout << E_grid[i] << " " << dsvde[i] << "\n";
+    std::cout << E_grid[i] << " " << sig_impact[i] << "\n";
   }
+
+  // output to file
+  std::ofstream ofile_sig;
+  ofile_sig.open("impact_" + in_filename);
+  std::cout << sig_impact.size() << std::endl;
+  for (std::size_t i = 0; i < sig_impact.size(); i++) {
+    ofile_sig << E_grid[i] * au_to_eV << " " << sig_impact[i] << "\n";
+  }
+  ofile_sig.close();
 
   // Can copy functions over from old dmXsection file
   // There, K was stored as 3D vector of vector...
