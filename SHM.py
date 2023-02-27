@@ -66,8 +66,8 @@ def norm_fv():
     v = dv
     A = 0.0
     for iv in range(vsteps):
-        A = A + fv_veldist(v,0,0,0)
-        v = v + dv
+        A += fv_veldist(v,0,0,0)
+        v += dv
     return 1.0 / (A * dv)
 
 # need to add error terms

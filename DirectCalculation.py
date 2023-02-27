@@ -42,13 +42,13 @@ def sigmaE(Kion, Egrid, qgrid, Ei):
             q = qgrid[iq]
             if q < qminus or q > qplus:
                 continue
-            dEdq = Et*q*duE*duQ
+            dEdq = Et*q
             FX2 = 1 / (q * q * q)
             sig += dEdq * FX2 * Kion[ide, iq]
 
     # Bohr radius, a0^2, in units of 10^-15 cm^2
     a02 = 0.0279841
-    return (4 * np.pi / Ei) * a02 * sig
+    return (4 * np.pi / Ei) * a02 * sig * duE * duQ
 
 
 # filename = "testdata_mat.txt"
@@ -83,7 +83,7 @@ for e in es:
     sig2 = sigmaE(K_array, E_array, q_array, e)
     y3.append(sig2)
 
-with open('impact_py_20230223.txt','w') as f:
+with open('impact_py_20230227.txt','w') as f:
     for i in range(len(es)):
         print(str(es[i]*27.211) + " " + str(y3[i]), file=f)
 

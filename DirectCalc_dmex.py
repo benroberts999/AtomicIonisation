@@ -38,10 +38,11 @@ def dsdE_Evmvmx(Kion, E, ide, qgrid, v, mv, mx):
         q = qgrid[iq]
         if q < qminus or q > qplus:
             continue
-        qdq = q * duQ
+        dqdt = q
         FX2 = F_chi_2(mu, q)
-        dsdE += qdq * FX2 * Kion[ide, iq]
-    return (0.5 / (v**2)) * dsdE
+        dsdE += q * dqdt * FX2 * Kion[ide, iq]
+    dsdE *= (0.5 / (v**2)) * duQ
+    return dsdE
 
 def dsvdE_Evmvmx(Kion, Egrid, qgrid, mv, mx, arr_fv, dv):
     esteps = len(Egrid)
@@ -89,7 +90,7 @@ fv_array, v_array, dv = SHM.fv_array()
 print(len(fv_array))
 dsvde_array = dsvdE_Evmvmx(K_array, E_array, q_array, 0.0, 10.0, fv_array, dv)
 
-with open('dmex_py_20230223.txt','w') as f:
+with open('dmex_py_20230227.txt','w') as f:
     for i in range(len(E_array)):
         print(str(E_array[i]*27.211) + " " + str(dsvde_array[i]), file=f)
 
