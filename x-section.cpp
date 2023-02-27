@@ -150,13 +150,13 @@ double sigtot_E(const LinAlg::Matrix<double> Kion,
                 const std::vector<double> &q_grid, double Ei) {
   double sigtot = 0.0;
 
-  auto Emin = E_grid.at(0);
-  auto Emax = E_grid.at(E_grid.size() - 1);
-  auto qmin = q_grid.at(0);
-  auto qmax = q_grid.at(q_grid.size() - 1);
+  const auto Emin = *std::min_element(E_grid.begin(), E_grid.end());
+  const auto Emax = *std::max_element(E_grid.begin(), E_grid.end());
+  const auto qmin = *std::min_element(q_grid.begin(), q_grid.end());
+  const auto qmax = *std::max_element(q_grid.begin(), q_grid.end());
 
-  auto duE = std::log((Emax / Emin) / (double)(E_grid.size() - 1));
-  auto duQ = std::log((qmax / qmin) / (double)(q_grid.size() - 1));
+  const auto duE = std::log(Emax / Emin) / double(E_grid.size() - 1);
+  const auto duQ = std::log(qmax / qmin) / double(q_grid.size() - 1);
 
   for (std::size_t iE = 0; iE < E_grid.size(); iE++) {
     auto E = E_grid.at(iE);
@@ -168,11 +168,12 @@ double sigtot_E(const LinAlg::Matrix<double> Kion,
       double q = q_grid.at(iq);
       if (q < qminus || q > qplus)
         continue;
-      double dEdq = E * q * duE * duQ;
+      double dEdq = E * q;
       double FX2 = 1.0 / (q * q * q);
       sigtot += dEdq * FX2 * Kion(iE, iq);
     }
   }
+  sigtot *= duE * duQ;
   // double a02 = 0.0279841;
   double a02 = PhysConst::aB_cm * PhysConst::aB_cm;
   return (4.0 * M_PI * a02 / Ei) * sigtot;
