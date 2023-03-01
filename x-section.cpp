@@ -11,6 +11,19 @@
 const double V_to_kms = (PhysConst::c_SI / PhysConst::c) / 1000.0;
 const double M_to_GeV = PhysConst::m_e_MeV / 1000.0;
 const double au_to_eV = PhysConst::Hartree_eV;
+const double E_to_keV = PhysConst::Hartree_eV / 1000.;
+
+const double V_to_cms =
+    (PhysConst::c_SI * PhysConst::alpha) * 100.;     // au -> cm/s
+const double V_to_cmday = V_to_cms * (24 * 60 * 60); // cm/s -> cm/day
+
+// DM energy density (in GeV/cm^3)
+const double rhoDM_GeVcm3 = 0.4; // GeV/cm^3
+
+// Default value used for bar-sigma_e + conversions from a.u.
+const double sbe_1e37_cm2 = 1.e-37;
+const double dsdE_to_cm2keV = sbe_1e37_cm2 / E_to_keV; // au -> cm^2/keV
+const double dsvdE_to_cm3keVday = dsdE_to_cm2keV * V_to_cmday;
 
 //==============================================================================
 //! Reads E grid, q grid, and Kion(E,q) from '_mat' formatted text file. Note:
@@ -142,6 +155,62 @@ std::vector<double> dsvdE(const LinAlg::Matrix<double> Kion, double mx,
   return dsvdE_vec;
 }
 
+// //==============================================================================
+// //! Quick exponentional, good to parts in 1.e-5
+// double quickExp(double x) {
+//   if (x < 0)
+//     return 1.0 / quickExp(-x);
+//   if (x < 0.05)
+//     return 1.0 + x + 0.5 * x * x;
+//   if (x < 0.25)
+//     return 1.0 + x + 0.5 * x * x + 0.16666667 * x * x * x +
+//            0.041666667 * x * x * x * x;
+//   return std::exp(x);
+// }
+
+//==============================================================================
+//! Simple Gaussian, g(x) with standard dev of sigma
+double gaussian(double sigma, double x) {
+  double a = 0.398942 / sigma;
+  double y = (x / sigma) * (x / sigma);
+  // return a * quickExp(-0.5 * y);
+  return a * std::exp(-0.5 * y);
+}
+
+//==============================================================================
+//! Convolution across energy grid
+std::vector<double> convolvedRate(const std::vector<double> &dRdE,
+                                  const std::vector<double> &E_grid,
+                                  double units) {
+  std::vector<double> conv;
+  conv.reserve(E_grid.size());
+
+  const auto Emin = *std::min_element(E_grid.begin(), E_grid.end());
+  const auto Emax = *std::max_element(E_grid.begin(), E_grid.end());
+  const auto duE = std::log(Emax / Emin) / double(E_grid.size() - 1);
+
+  double alpha = 0.310;
+  double beta = 0.0037;
+
+  for (std::size_t iE = 0; iE < E_grid.size(); iE++) {
+    auto E = E_grid.at(iE);
+
+    double sigma =
+        (alpha * std::sqrt(E * E_to_keV) + beta * (E * E_to_keV)) / E_to_keV;
+
+    double tmp = 0.0;
+    for (std::size_t iEp = 0; iEp < E_grid.size(); iEp++) {
+      auto Ep = E_grid.at(iEp);
+      double dEdt = E;
+      double g = gaussian(sigma, Ep - E);
+      tmp += g * dRdE[iEp] * dEdt;
+    }
+    tmp *= duE * units;
+    conv.push_back(tmp);
+  }
+  return conv;
+}
+
 //==============================================================================
 //! Calculates total cross-section for given electron energy, Ei
 //! in units of 10^-15 cm^2
@@ -246,10 +315,21 @@ int main(int argc, char *argv[]) {
   // calculate <ds.v>/dE
   const auto dsvde = dsvdE(Kion, mx, Fx2, E_grid, q_grid, Fv, 1000);
 
+  double mn_xe = 131. * (PhysConst::u_NMU * PhysConst::m_e_kg);
+  // Convert units to counts/day/kg/keV
+  double rho_on_mxc2 = rhoDM_GeVcm3 / (mx * M_to_GeV);
+  double rate_units = dsvdE_to_cm3keVday * rho_on_mxc2 / mn_xe;
+
   // // For now, just output to screen
   // for (std::size_t i = 0; i < dsvde.size(); ++i) {
   //   std::cout << E_grid[i] << " " << dsvde[i] << "\n";
   // }
+  std::ofstream ofile_dsvde;
+  ofile_dsvde.open("dsvde_" + in_filename);
+  for (std::size_t i = 0; i < dsvde.size(); i++) {
+    ofile_dsvde << E_grid[i] * E_to_keV << " "
+                << dsvde[i] * rate_units * 1000.0 * 365.0 << "\n";
+  }
 
   // calculate sig(E) for e-e impact ion
   const auto sig_impact = sigtot(Kion, E_grid, q_grid);
@@ -276,4 +356,39 @@ int main(int argc, char *argv[]) {
   // 3. Calculate <ds.v>/dE
   // 4. Calculate sigma(E)
   // 5. Smear with Gausian
+
+  // // Total atomic mass for xenon in kg
+  // double mn_xe = 131. * (PhysConst::u_NMU * PhysConst::m_e_kg);
+
+  // Efficiency as function of deposited energy of Xe1T detector
+  auto effic = [](double energy) {
+    if (energy < 0.5 / E_to_keV)
+      return 0.0;
+    else
+      return (0.876 - 7.39e-04 * energy * E_to_keV) /
+             std::pow(
+                 (1.0 + 0.104 * std::exp(-(energy * E_to_keV - 1.98) / 0.360)),
+                 2.03);
+  };
+
+  // // Convert units to counts/day/kg/keV
+  // double rho_on_mxc2 = rhoDM_GeVcm3 / (mx * M_to_GeV);
+  // double rate_units = dsvdE_to_cm3keVday * rho_on_mxc2 / mn_xe;
+
+  std::vector<double> dSdE_E;
+  dSdE_E.resize(E_grid.size());
+
+  dSdE_E = convolvedRate(dsvde, E_grid, rate_units);
+  for (std::size_t iE = 0; iE < E_grid.size(); iE++) {
+    double E = E_grid[iE];
+    dSdE_E[iE] *= effic(E);
+  }
+
+  std::ofstream ofile_dsde;
+  ofile_dsde.open("obsrate" + in_filename);
+  for (std::size_t i = 0; i < dSdE_E.size(); i++) {
+    ofile_dsde << E_grid[i] * E_to_keV << " " << dSdE_E[i] * 1000.0 * 365.0
+               << "\n";
+  }
+  ofile_dsde.close();
 }
