@@ -1,5 +1,18 @@
-__pycache__/
-*.pyc
-.vscode
-*.txt
-*.out
+## ignore all files in all subdirectories (including /)
+**/*
+## except: gitignore file (only the one in /)
+!.gitignore
+## except: any file in any subdirectory that matches:
+!**/Makefile
+!**/*.md
+!**/*.cpp
+!**/*.hpp
+!**/*.ipp
+!**/*.sh
+!**/*.gnu
+!**/*.py
+
+# Particular files to track:
+!K_Xe_v_6_hp_orth_mat.txt
+!testdata_mat.txt
+!kion.out
