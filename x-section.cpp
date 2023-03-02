@@ -192,18 +192,36 @@ std::vector<double> convolvedRate(const std::vector<double> &dRdE,
   double alpha = 0.310;
   double beta = 0.0037;
 
+  std::vector<std::vector<double>> gausVec(E_grid.size());
+
+  for (std::size_t i = 0; i < E_grid.size(); i++) {
+    double Eobs = E_grid[i];
+    double sigma =
+        (alpha * std::sqrt(Eobs * E_to_keV) + beta * (Eobs * E_to_keV)) /
+        E_to_keV;
+    for (std::size_t j = 0; j < E_grid.size(); j++) {
+      double Eer = E_grid[j];
+      double g = gaussian(sigma, Eobs - Eer);
+
+      if (Eer < E_grid[0] || Eobs < E_grid[0])
+        g = 0.0;
+
+      gausVec[i].push_back(g);
+    }
+  }
+
   for (std::size_t iE = 0; iE < E_grid.size(); iE++) {
     auto E = E_grid.at(iE);
 
-    double sigma =
-        (alpha * std::sqrt(E * E_to_keV) + beta * (E * E_to_keV)) / E_to_keV;
+    // double sigma =
+    //     (alpha * std::sqrt(E * E_to_keV) + beta * (E * E_to_keV)) / E_to_keV;
 
     double tmp = 0.0;
     for (std::size_t iEp = 0; iEp < E_grid.size(); iEp++) {
       auto Ep = E_grid.at(iEp);
       double dEdt = E;
-      double g = gaussian(sigma, Ep - E);
-      tmp += g * dRdE[iEp] * dEdt;
+      // double g = gaussian(sigma, Ep - E);
+      tmp += gausVec[iE][iEp] * dRdE[iEp] * dEdt;
     }
     tmp *= duE * units;
     conv.push_back(tmp);
@@ -362,13 +380,13 @@ int main(int argc, char *argv[]) {
 
   // Efficiency as function of deposited energy of Xe1T detector
   auto effic = [](double energy) {
-    if (energy < 0.5 / E_to_keV)
-      return 0.0;
-    else
-      return (0.876 - 7.39e-04 * energy * E_to_keV) /
-             std::pow(
-                 (1.0 + 0.104 * std::exp(-(energy * E_to_keV - 1.98) / 0.360)),
-                 2.03);
+    // if (energy < 0.5 / E_to_keV)
+    //   return 0.0;
+    // else
+    return (0.876 - 7.39e-04 * energy * E_to_keV) /
+           std::pow(
+               (1.0 + 0.104 * std::exp(-(energy * E_to_keV - 1.98) / 0.360)),
+               2.03);
   };
 
   // // Convert units to counts/day/kg/keV
@@ -379,13 +397,13 @@ int main(int argc, char *argv[]) {
   dSdE_E.resize(E_grid.size());
 
   dSdE_E = convolvedRate(dsvde, E_grid, rate_units);
-  for (std::size_t iE = 0; iE < E_grid.size(); iE++) {
-    double E = E_grid[iE];
-    dSdE_E[iE] *= effic(E);
-  }
+  // for (std::size_t iE = 0; iE < E_grid.size(); iE++) {
+  //   double E = E_grid[iE];
+  //   dSdE_E[iE] *= effic(E);
+  // }
 
   std::ofstream ofile_dsde;
-  ofile_dsde.open("obsrate" + in_filename);
+  ofile_dsde.open("obsratenewconv_noeffic_" + in_filename);
   for (std::size_t i = 0; i < dSdE_E.size(); i++) {
     ofile_dsde << E_grid[i] * E_to_keV << " " << dSdE_E[i] * 1000.0 * 365.0
                << "\n";
