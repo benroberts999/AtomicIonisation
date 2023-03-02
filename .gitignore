@@ -1,5 +1,7 @@
 ## ignore all files in all subdirectories (including /)
 **/*
+# Except sub-directories:
+!**/
 ## except: gitignore file (only the one in /)
 !.gitignore
 ## except: any file in any subdirectory that matches:
@@ -12,7 +14,7 @@
 !**/*.gnu
 !**/*.py
 
-# Particular files to track:
+# Extra particular files to track:
 !K_Xe_v_6_hp_orth_mat.txt
 !testdata_mat.txt
 !kion.out

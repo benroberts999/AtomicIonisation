@@ -3,8 +3,23 @@ STD=-std=c++17
 WARN=-Wall -Wextra -Wpedantic -Wconversion
 OPT=-O3
 
-# Directory of ampsci.... better way?
-AMPSCI=/home/uqbrob14/ampsci/src
+EXES = dmex eimpact
 
-x-section: x-section.cpp StandardHaloModel.cpp StandardHaloModel.hpp
-	$(CXX) $(STD) -o $@ $@.cpp StandardHaloModel.cpp $(WARN) $(OPT) -I$(AMPSCI)
+SRC=./src
+# Simple: depends on everything
+SOURCES = $(SRC)/*.cpp
+DEPS = $(SOURCES) $(SRC)/*.hpp
+
+# just compile + link at same time
+COMP=$(CXX) $(STD) -o $@ $@.cpp $(SOURCES) $(WARN) $(OPT) -I$(SRC)
+
+all: $(EXES)
+
+dmex: dmex.cpp $(DEPS)
+	$(COMP)
+
+eimpact: eimpact.cpp $(DEPS)
+	$(COMP)
+
+clean:
+	rm -rfv $(EXES)

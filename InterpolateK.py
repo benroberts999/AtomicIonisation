@@ -20,7 +20,7 @@ def log_space_interp(X, Y, Z):
     Z_ij = Z(X_i, Y_j)"""
     xx, yy = np.meshgrid(X, Y)
     interp_log = LinearNDInterpolator(list(zip(np.log(xx.flatten('F')), np.log(
-        yy.flatten('F')))), np.log(Z.flatten()))
+        yy.flatten('F')))), np.log(Z.flatten()), fill_value=0.0)
 
     def interped_func(x, y):
         return np.exp(interp_log(np.log(x), np.log(y)))
@@ -84,9 +84,9 @@ def sigma_impact(E_i, Kion):
     a02 = 0.0279841
 
     def h(q, dE):
-        if dE < Emin or dE > Emax or q < Qmin or q > Qmax:
-            # don't extrapolate past ends of array
-            return 0.0
+        # if dE < Emin or dE > Emax or q < Qmin or q > Qmax:
+        #     # don't extrapolate past ends of array
+        #     return 0.0
         if dE > E_i:
             # Energy conservation:
             return 0.0
