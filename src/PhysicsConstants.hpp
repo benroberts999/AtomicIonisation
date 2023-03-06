@@ -52,10 +52,18 @@ namespace Conversions {
 constexpr double M_to_GeV = Constants::m_e_MeV / 1000.0;
 
 //! Energy: Converts atomic units to eV
-constexpr double au_to_eV = Constants::Hartree_eV;
+constexpr double Energy_au_to_eV = Constants::Hartree_eV;
 
 //! Energy: Converts atomic units to keV
 constexpr double E_to_keV = Constants::Hartree_eV / 1000.0;
+
+//! Momentum: Converts atomic units to MeV:
+//! [hbar*q] = [hbar/a0] = (m_e*c*alpha) = E_H/c*alpha
+constexpr double Momentum_to_MeV =
+    Constants::Hartree_eV / Constants::alpha / 1.0e6;
+
+//! Momentum: MeV -> au
+constexpr double Momentum_MeV_to_au = 1.0 / Momentum_to_MeV;
 
 //! Velocity: Converts atomic units to km/s
 constexpr double V_to_kms = (Constants::c_SI / Constants::c_au) / 1000.0;
