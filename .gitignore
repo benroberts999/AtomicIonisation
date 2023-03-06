@@ -15,6 +15,5 @@
 !**/*.py
 
 # Extra particular files to track:
-!K_Xe_v_6_hp_orth_mat.txt
-!testdata_mat.txt
-!kion.out
+!tables
+!tables/**/*
