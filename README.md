@@ -100,9 +100,9 @@ For the case of a vector coupling (treating the DM particle non-relativistically
 the cross-section may be expressed:
 
 $$ \tag{3}
-\frac{d\langle\sigma v\rangle}{d E} = \frac{\bar\sigma_e c}{2m_e c^2}
-  \int d v \frac{f(v)}{v/c}
-  \int_{q_-}^{q_+} \, a_0^2 \, q {\rm d}q |F_\chi(q)|^2 K(E,q),
+\frac{{\rm d}\langle\sigma v\rangle}{{\rm d} E} = \frac{\bar\sigma_e c}{2m_e c^2}
+  \int {\rm d}v \frac{f(v)}{v/c}
+  \int_{q_-}^{q_+} \ a_0^2 \ q {\rm d}q \ |F_\chi(q)|^2 \ K(E,q),
 $$
 
 where
@@ -117,8 +117,8 @@ where
 
 The underlying event rate
 
-$$
-\frac{dR}{dE} = \frac{n_T \rho_\chi}{m_\chi c^2}\frac{d\langle\sigma v\rangle}{d E}
+$$ \tag{4}
+\frac{{\rm d}R}{{\rm d}E} = \frac{n_T \rho_\chi}{m_\chi c^2}\frac{{\rm d}\langle\sigma v\rangle}{d E}
 $$
 
 where
@@ -127,12 +127,13 @@ where
 - $m_\chi$ is the DM mass
 - $\rho_\chi\approx0.4\ {\rm GeV}\ {\rm cm}^{-3}$ is the local DM density
 
+To calculate the observable scintillation (S1) signal, one needs to consider the detector characteristics.
 To model the detector response (energy resolution, efficiency, and acceptance),
 we follow the XENON Collaboration, ####.
 The observable event rate, $S$, is written as a convolution of the underlying ionisation rate, $R$.
 
-$$
-\frac{dS}{dE} = \epsilon(E)\int \frac{dR}{dE}(E')g_{\sigma_E}(E-E')\ {\rm d}E'
+$$ \tag{5}
+\frac{{\rm d}S}{{\rm d}E} = \epsilon(E)\int \frac{{\rm d}R}{{\rm d}E}(E')g_{\sigma_E}(E-E')\ {\rm d}E'
 $$
 
 We use a simple model for the detector efficiency/acceptance,
@@ -167,7 +168,10 @@ Standard values for parameters of the model are chosen, these can be easily upda
 
 ### 3.1 example: running `dmex`
 
-The program can be compiled using the provided Makefile.
+The example program, [`dmex.cpp`](./dmex.cpp), calculates $\frac{d\langle\sigma v\rangle}{d E}$,
+$\frac{dR}{dE}$, and $\frac{dS}{dE}$ as a function of energy deposition, for a provided DM model.
+It also calculated binned rate counts.
+It can be compiled using the provided Makefile.
 
 Takes input directly from command line.
 The first argument is name of the file containing Kion.
@@ -210,17 +214,25 @@ The program [eimpact.cpp](./eimpact.cpp) calculated electron impact ionisation c
 using the same atomic ionisation factors.
 
 Electron-impact ionisation is a very similar problem to DM-induced ionisation.
-There exist high-quality experimental data at high $sim\ {\rm keV}$ impact energies,
+There exist high-quality experimental data at high $\sim \ {\rm keV}$ impact energies,
 which provide an ideal test case for testing the atomic ionisation factors.
 
-$$
-\sigma(E) = \frac{4\pi}{E}\int_0^E\int_{q_-}^{q_+}\ {\rm d}q \frac{K(E,q)}{q^3}\ {\rm d}E
+$$ \tag{6}
+\sigma(E_i) = \frac{4\pi \ a_0^2}{E_i}\int_0^{E_i}\int_{q_-}^{q_+} \ {\rm d}q \ \frac{K(E,q)}{q^3}\ {\rm d}E
 $$
 
-where the $K$ factor is exactly the same as in the (vector-coupled) DM case.
+where
 
-In particular, comparison to experiment for Xe shows our calculations are highly accurate,
-and demonstrates the importance of accurate modelling of the atomic wavefunctions.
+- $E$ is the energy exchange
+- $E_i = m_ev^2/2$ is the initial energy of the incident electron
+- the $K$ factor is exactly the same as in the (vector-coupled) DM case.
+
+Notice this formula is exacly the same as the DM scattering case (3), with $m_\chi\to m_e$, and a massless mediator.
+In the case of a massless mediator, $\bar\sigma_e=16\pi a_0^2$.
+
+In particular, comparison to experiment for Xe shows our calculations are highly
+accurate in the relevant energy range, and demonstrates the importance of
+accurate modelling of the atomic wavefunctions.
 
 Usage:
 
