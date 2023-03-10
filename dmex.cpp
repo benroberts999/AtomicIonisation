@@ -156,6 +156,7 @@ int main(int argc, char *argv[]) {
   const auto epsilon = argc > 10 ? std::stod(argv[10]) : default_epsilon;
 
   // Efficiency as function of deposited energy (for XENON-like detector)
+  const auto E_thresh = 0.5 / Physics::Conversions::E_to_keV;
   std::cout << "# Efficiency: gamma = " << gamma << ", delta = " << delta
             << ", epsilon = " << epsilon << "\n";
   auto efficiency = [=](double energy) {
@@ -164,7 +165,9 @@ int main(int argc, char *argv[]) {
     // return (0.876 - 7.39e-04 * e_keV) /
     //        std::pow((1.0 + 0.104 * std::exp(-(e_keV - 1.98) / 0.360)), 2.03);
     // Simplified version (nearly as good):
-    return epsilon / (1.0 + gamma * std::exp(-delta * (e_keV - 2.0)));
+    return energy < E_thresh
+               ? 0.0
+               : epsilon / (1.0 + gamma * std::exp(-delta * (e_keV - 2.0)));
   };
 
   // For simplicity, combine resolution and efficiency:
