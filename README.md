@@ -64,8 +64,12 @@ We consider only cases where
 
 In the directory [tables/](./tables/), we provide tables of atomic ionisation factors K.
 
-- [K_Xe_v_6_hp_orth_mat.txt](./tables/K_Xe_v_6_hp_orth_mat.txt)
-  - $K$ ionisation factor for Xe, vector couling, including up to $L=6$, accounting for hole-particle interaction, with explicitely orthogonalised continuum orbitals
+E.g.,
+
+- [K_Xe_hf_v_6_hp_orth_mat.txt](./tables/K_Xe_hf_v_6_hp_orth_mat.txt)
+  - $K$ ionisation factor for Xe, using 'hf' (Hartre-Fock) method, 'v' vector couling, including up to $L=6$, accounting for hole-particle interaction, with explicitely orthogonalised continuum orbitals
+  - There are similar tables for Ar, Kr
+  - For all of Xe, Ar, Kr, there are 's' (scalar), 'ps' (pseudo-scalar), and 'pv' (pseudo-vector) versions
 
 These tables have been generated using [_ampsci_](https://ampsci.dev/), a C++ program for high-precision atomic structure calculations.
 Example input/output files from the ampsci runs that generated these tables are also presented in the
@@ -82,12 +86,13 @@ The tables are in the form of 3 blocks:
 - Third block contains the $K(E,q)$ factor, in matrix form.
   - $K$ is dimensionless
   - Each new row is for a new $E$ value, each column is for a new $q$ value
+- Lines beginning with `#` should be interpretted as comments
 
 We have provided example programs that read in files of this form:
 
-- [dmex.cpp](./dmex.cpp) - a C++ version, which also calculates DM-induced ionisation event rates
+- [dmex.cpp](./dmex.cpp) - a C++ program, which calculates DM-induced ionisation event rates (details below)
 - [eimpact.cpp](./eimpact.cpp) - a C++ program, which calculates electron-impact ionisation cross-section
-- [InterpolateK.py](InterpolateK.py) - a short python script that reads in K, created an interpolating function for $K(E,q)$, and plots $K$ as an example
+- [InterpolateK.py](InterpolateK.py) - a short python script that reads in K, creates an interpolating function for $K(E,q)$, and plots $K$, as an example
 
 ----
 
@@ -129,7 +134,7 @@ where
 
 To calculate the observable scintillation (S1) signal, one needs to consider the detector characteristics.
 To model the detector response (energy resolution, efficiency, and acceptance),
-we follow the XENON Collaboration, ####.
+we follow the [XENON Collaboration, PRD **102**, 072004 (2020)](https://link.aps.org/doi/10.1103/PhysRevD.102.072004), [arXiv:2006.09721](http://arxiv.org/abs/2006.09721).
 The observable event rate, $S$, is written as a convolution of the underlying ionisation rate, $R$.
 
 $$ \tag{5}
@@ -142,16 +147,16 @@ $$
 \epsilon(E) = \epsilon_0 \left[1 + \gamma e^{-\delta (E/{\rm keV} - 2.0)}\right]^{-1}.
 $$
 
-We take $\gamma=0.19$, $\delta=3.3$, $\epsilon_0=0.87$, which come from a fit to Fig. ## of ####
+We take $\gamma=0.19$, $\delta=3.3$, $\epsilon_0=0.87$, which come from a fit to Fig. 2 of the above paper.
 
-For the detector resolution, we also follow ####, and use a Gaussian, $g_{\sigma_E}$,
+For the detector resolution, we also follow XENON collab. and use a Gaussian, $g_{\sigma_E}$,
 with energy-dependent standard deviation:
 
 $$
 \sigma_E / {\rm keV} = \alpha \sqrt{E/{\rm keV}} + \beta(E/{\rm keV}),
 $$
 
-where $\alpha=0.310$, $\beta=0.0037$ ####.
+where $\alpha=0.310$, $\beta=0.0037$ (from above paper).
 
 We stress, that for very low-energy electron recoil events, the observable event
 rate is extremely sensitive to the low-energy detector resolution. This

@@ -1,0 +1,307 @@
+
+********************************************************************************
+AMPSCI v: 0.0 [main/cfca9ccf]
+Parallel: Using OpenMP with 24 threads.
+Compiled: g++ [Ubuntu 11.3.0-1ubuntu1~22.04] 11.3.0 2023-04-13 19:10 AEST
+Run time: 2023-04-14 17:06:05
+
+********************************************************************************
+Atom { Z = Xe; }
+HartreeFock { core = [Xe]; }
+Grid { 
+  r0 = 1e-7;
+  rmax = 40.0;
+  num_points = 20000;
+  b = 1.0;
+}
+Module::Kionisation { 
+  E_range = 0.005,10.0;
+  E_steps = 256;
+  q_range = 0.0001,5.0;
+  q_steps = 1024;
+  max_L = 6;
+  method = hf;
+  hole_particle = true;
+  force_orthog = true;
+  force_rescale = false;
+  output_format = mat,gnu;
+  coupling = Vector;
+}
+Module::Kionisation { 
+  E_range = 0.005,10.0;
+  E_steps = 256;
+  q_range = 0.0001,5.0;
+  q_steps = 1024;
+  max_L = 6;
+  method = hf;
+  hole_particle = true;
+  force_orthog = true;
+  force_rescale = false;
+  output_format = mat,gnu;
+  coupling = Scalar;
+}
+Module::Kionisation { 
+  E_range = 0.005,10.0;
+  E_steps = 256;
+  q_range = 0.0001,5.0;
+  q_steps = 1024;
+  max_L = 6;
+  method = hf;
+  hole_particle = true;
+  force_orthog = true;
+  force_rescale = false;
+  output_format = mat,gnu;
+  coupling = Pseudovector;
+}
+Module::Kionisation { 
+  E_range = 0.005,10.0;
+  E_steps = 256;
+  q_range = 0.0001,5.0;
+  q_steps = 1024;
+  max_L = 6;
+  method = hf;
+  hole_particle = true;
+  force_orthog = true;
+  force_rescale = false;
+  output_format = mat,gnu;
+  coupling = Pseudoscalar;
+}
+
+Running for Xe, Z=54 A=131
+Fermi nucleus;  r_rms = 4.7808, c_hdr = 5.63781, t = 2.3
+Log-linear (b=1) grid: 1e-07->40, N=20000, du=0.0029905
+========================================================
+Hartree-Fock
+Core   :  it: 29 eps=6.9e-14 for 5s+
+
+Xe-131
+Core: [Xe] (V^N)
+     state  k   Rinf its   eps         En (au)        En (/cm)
+0   1s_1/2 -1    0.7  2  6e-30 -1277.257502745  -280325619.571
+1   2s_1/2 -1    1.7  2  8e-27  -202.465052806   -44435942.829
+2   2p_1/2  1    1.7  2  4e-27  -189.679752447   -41629893.745
+3   2p_3/2 -2    1.8  2  4e-27  -177.704540959   -39001638.619
+4   3s_1/2 -1    3.6  2  1e-25   -43.010450471    -9439702.762
+5   3p_1/2  1    3.8  2  8e-26   -37.659959781    -8265405.790
+6   3p_3/2 -2    4.0  2  8e-26   -35.325258353    -7752998.055
+7   3d_3/2  2    4.6  2  6e-26   -26.023360713    -5711467.499
+8   3d_5/2 -3    4.7  2  6e-26   -25.537091656    -5604743.777
+9   4s_1/2 -1    8.1  2  2e-25    -8.429918110    -1850153.170
+10  4p_1/2  1    9.3  2  1e-25    -6.452494679    -1416158.891
+11  4p_3/2 -2    9.7  2  1e-25    -5.982791611    -1313070.983
+12  4d_3/2  2   14.4  2  6e-26    -2.711330947     -595068.360
+13  4d_5/2 -3   14.6  2  6e-26    -2.633759640     -578043.426
+14  5s_1/2 -1   23.8  2  2e-27    -1.010137846     -221699.631
+15  5p_1/2  1   34.0  2  1e-27    -0.492572125     -108107.085
+16  5p_3/2 -2   36.0  2  8e-28    -0.439804790      -96525.994
+E_c = -7446.898717
+
+--------------------------------------------------------------------------------
+Module: Module::Kionisation
+
+Summary of inputs:
+Energy  : [0.01, 10.00] keV  = [0.2, 367.5] au, in 256 steps
+Momentum: [0.000, 5.000] MeV = [0.0, 1340.9] au, in 1024 steps
+
+Very rough guess at maximum safe q: 2100 au = 7.83 MeV
+Approx continuum wavelength for max E: 0.232.
+Approx dr at large r: 0.0030
+
+Max L   : 6  (multipolarity in e^iqr expansion)
+Using   : hf method
+
+Options:
+Subtracting HF self-interaction (account for hole-particle interaction)
+Explicitely enforcing orthogonality between bound and continuum states
+
+
+Core orbitals:
+        E(au)   E(keV)  N_el
+------- Inaccessible -------
+1s+  -1277.26  -34.756   2
+-------- Accessible --------
+2s+   -202.47   -5.509   2
+2p-   -189.68   -5.161   2
+2p+   -177.70   -4.836   4
+3s+    -43.01   -1.170   2
+3p-    -37.66   -1.025   2
+3p+    -35.33   -0.961   4
+3d-    -26.02   -0.708   4
+3d+    -25.54   -0.695   6
+4s+     -8.43   -0.229   2
+4p-     -6.45   -0.176   2
+4p+     -5.98   -0.163   4
+4d-     -2.71   -0.074   4
+4d+     -2.63   -0.072   6
+5s+     -1.01   -0.027   2
+5p-     -0.49   -0.013   2
+5p+     -0.44   -0.012   4
+
+Filling jL lookup table: done.
+Operator: jL
+_gnu output file (if requested) will use: Particle units
+(_mat and _xyz output files always use atomic units)
+
+Calculating K(E,q) - ionisation factor
+2s+, 2p-, 2p+, 3s+, 3p-, 3p+, 3d-, 3d+, 4s+, 4p-, 4p+, 4d-, 4d+, 5s+, 5p-, 5p+, 
+Written to file: K_Xe_hf_v_6_hp_orth
+
+Kionisation: T = 4.04 mins
+
+--------------------------------------------------------------------------------
+Module: Module::Kionisation
+
+Summary of inputs:
+Energy  : [0.01, 10.00] keV  = [0.2, 367.5] au, in 256 steps
+Momentum: [0.000, 5.000] MeV = [0.0, 1340.9] au, in 1024 steps
+
+Very rough guess at maximum safe q: 2100 au = 7.83 MeV
+Approx continuum wavelength for max E: 0.232.
+Approx dr at large r: 0.0030
+
+Max L   : 6  (multipolarity in e^iqr expansion)
+Using   : hf method
+
+Options:
+Subtracting HF self-interaction (account for hole-particle interaction)
+Explicitely enforcing orthogonality between bound and continuum states
+
+
+Core orbitals:
+        E(au)   E(keV)  N_el
+------- Inaccessible -------
+1s+  -1277.26  -34.756   2
+-------- Accessible --------
+2s+   -202.47   -5.509   2
+2p-   -189.68   -5.161   2
+2p+   -177.70   -4.836   4
+3s+    -43.01   -1.170   2
+3p-    -37.66   -1.025   2
+3p+    -35.33   -0.961   4
+3d-    -26.02   -0.708   4
+3d+    -25.54   -0.695   6
+4s+     -8.43   -0.229   2
+4p-     -6.45   -0.176   2
+4p+     -5.98   -0.163   4
+4d-     -2.71   -0.074   4
+4d+     -2.63   -0.072   6
+5s+     -1.01   -0.027   2
+5p-     -0.49   -0.013   2
+5p+     -0.44   -0.012   4
+
+Filling jL lookup table: done.
+Operator: g0jL
+_gnu output file (if requested) will use: Particle units
+(_mat and _xyz output files always use atomic units)
+
+Calculating K(E,q) - ionisation factor
+2s+, 2p-, 2p+, 3s+, 3p-, 3p+, 3d-, 3d+, 4s+, 4p-, 4p+, 4d-, 4d+, 5s+, 5p-, 5p+, 
+Written to file: K_Xe_hf_s_6_hp_orth
+
+Kionisation: T = 4.03 mins
+
+--------------------------------------------------------------------------------
+Module: Module::Kionisation
+
+Summary of inputs:
+Energy  : [0.01, 10.00] keV  = [0.2, 367.5] au, in 256 steps
+Momentum: [0.000, 5.000] MeV = [0.0, 1340.9] au, in 1024 steps
+
+Very rough guess at maximum safe q: 2100 au = 7.83 MeV
+Approx continuum wavelength for max E: 0.232.
+Approx dr at large r: 0.0030
+
+Max L   : 6  (multipolarity in e^iqr expansion)
+Using   : hf method
+
+Options:
+Subtracting HF self-interaction (account for hole-particle interaction)
+Explicitely enforcing orthogonality between bound and continuum states
+
+
+Core orbitals:
+        E(au)   E(keV)  N_el
+------- Inaccessible -------
+1s+  -1277.26  -34.756   2
+-------- Accessible --------
+2s+   -202.47   -5.509   2
+2p-   -189.68   -5.161   2
+2p+   -177.70   -4.836   4
+3s+    -43.01   -1.170   2
+3p-    -37.66   -1.025   2
+3p+    -35.33   -0.961   4
+3d-    -26.02   -0.708   4
+3d+    -25.54   -0.695   6
+4s+     -8.43   -0.229   2
+4p-     -6.45   -0.176   2
+4p+     -5.98   -0.163   4
+4d-     -2.71   -0.074   4
+4d+     -2.63   -0.072   6
+5s+     -1.01   -0.027   2
+5p-     -0.49   -0.013   2
+5p+     -0.44   -0.012   4
+
+Filling jL lookup table: done.
+Operator: ig5jL
+_gnu output file (if requested) will use: Particle units
+(_mat and _xyz output files always use atomic units)
+
+Calculating K(E,q) - ionisation factor
+2s+, 2p-, 2p+, 3s+, 3p-, 3p+, 3d-, 3d+, 4s+, 4p-, 4p+, 4d-, 4d+, 5s+, 5p-, 5p+, 
+Written to file: K_Xe_hf_pv_6_hp_orth
+
+Kionisation: T = 3.91 mins
+
+--------------------------------------------------------------------------------
+Module: Module::Kionisation
+
+Summary of inputs:
+Energy  : [0.01, 10.00] keV  = [0.2, 367.5] au, in 256 steps
+Momentum: [0.000, 5.000] MeV = [0.0, 1340.9] au, in 1024 steps
+
+Very rough guess at maximum safe q: 2100 au = 7.83 MeV
+Approx continuum wavelength for max E: 0.232.
+Approx dr at large r: 0.0030
+
+Max L   : 6  (multipolarity in e^iqr expansion)
+Using   : hf method
+
+Options:
+Subtracting HF self-interaction (account for hole-particle interaction)
+Explicitely enforcing orthogonality between bound and continuum states
+
+
+Core orbitals:
+        E(au)   E(keV)  N_el
+------- Inaccessible -------
+1s+  -1277.26  -34.756   2
+-------- Accessible --------
+2s+   -202.47   -5.509   2
+2p-   -189.68   -5.161   2
+2p+   -177.70   -4.836   4
+3s+    -43.01   -1.170   2
+3p-    -37.66   -1.025   2
+3p+    -35.33   -0.961   4
+3d-    -26.02   -0.708   4
+3d+    -25.54   -0.695   6
+4s+     -8.43   -0.229   2
+4p-     -6.45   -0.176   2
+4p+     -5.98   -0.163   4
+4d-     -2.71   -0.074   4
+4d+     -2.63   -0.072   6
+5s+     -1.01   -0.027   2
+5p-     -0.49   -0.013   2
+5p+     -0.44   -0.012   4
+
+Filling jL lookup table: done.
+Operator: ig0g5jL
+_gnu output file (if requested) will use: Particle units
+(_mat and _xyz output files always use atomic units)
+
+Calculating K(E,q) - ionisation factor
+2s+, 2p-, 2p+, 3s+, 3p-, 3p+, 3d-, 3d+, 4s+, 4p-, 4p+, 4d-, 4d+, 5s+, 5p-, 5p+, 
+Written to file: K_Xe_hf_ps_6_hp_orth
+
+Kionisation: T = 4.09 mins
+
+ampsci: T = 16.11 mins

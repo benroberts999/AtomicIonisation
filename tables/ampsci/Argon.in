@@ -1,0 +1,63 @@
+Atom { Z = Ar; }
+
+HartreeFock { core = [Ar]; }
+
+Grid { 
+  r0 = 1e-6;
+  rmax = 40.0;
+  num_points = 20000;
+  b = 1.0;
+}
+
+Module::Kionisation {
+  E_range = 0.005,10.0;
+  E_steps = 256;
+  q_range = 0.0001,2.0;
+  q_steps = 1024;
+  max_L = 6;
+  method = hf;
+  hole_particle = true;
+  force_orthog = true;
+  force_rescale = false;
+  output_format = mat,gnu;
+  coupling = Vector;
+}
+Module::Kionisation {
+  E_range = 0.005,10.0;
+  E_steps = 256;
+  q_range = 0.0001,2.0;
+  q_steps = 1024;
+  max_L = 6;
+  method = hf;
+  hole_particle = true;
+  force_orthog = true;
+  force_rescale = false;
+  output_format = mat,gnu;
+  coupling = Scalar;
+}
+Module::Kionisation {
+  E_range = 0.005,10.0;
+  E_steps = 256;
+  q_range = 0.0001,2.0;
+  q_steps = 1024;
+  max_L = 6;
+  method = hf;
+  hole_particle = true;
+  force_orthog = true;
+  force_rescale = false;
+  output_format = mat,gnu;
+  coupling = Pseudovector;
+}
+Module::Kionisation {
+  E_range = 0.005,10.0;
+  E_steps = 256;
+  q_range = 0.0001,2.0;
+  q_steps = 1024;
+  max_L = 6;
+  method = hf;
+  hole_particle = true;
+  force_orthog = true;
+  force_rescale = false;
+  output_format = mat,gnu;
+  coupling = Pseudoscalar;
+}
