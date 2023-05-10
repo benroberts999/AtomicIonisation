@@ -252,5 +252,5 @@ sigma_e.txt will contain the cross-section, ready for plotting.
 
 ----
 
-[arXiv-badge]: https://img.shields.io/badge/arXiv-xxxx.yyyyy-b31b1b.svg?style=flat
-[arXiv-url]: https://arxiv.org/abs/xxxx.yyyyy
+[arXiv-badge]: https://img.shields.io/badge/arXiv-2305.05125-b31b1b.svg?style=flat
+[arXiv-url]: https://arxiv.org/abs/2305.05125
