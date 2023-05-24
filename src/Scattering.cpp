@@ -125,6 +125,7 @@ double dsvdE_E(const Matrix<double> &Kion, std::size_t iE, double E, double mx,
   // even for strange velocity distributions
   const double dv = vmax / num_v;
   double tmp_dsvdE_E = 0.0;
+#pragma omp parallel for reduction(+ : tmp_dsvdE_E)
   for (int iv = 0; iv < num_v; ++iv) {
     const double v = (iv + 1) * dv;
     tmp_dsvdE_E += v * Fv(v) * dsdE_E(Kion, iE, E, v, mx, Fx2, q_grid);
@@ -166,13 +167,15 @@ convolvedRate(const std::vector<double> &dRdE,
   assert(dRdE.size() == E_grid.size());
 
   std::vector<double> conv;
-  conv.reserve(E_grid.size());
+  // conv.reserve(E_grid.size());
+  conv.resize(E_grid.size());
 
   const auto Emin = *std::min_element(E_grid.begin(), E_grid.end());
   const auto Emax = *std::max_element(E_grid.begin(), E_grid.end());
   // This assumes a logarithmic E grid:
   const auto dtE = std::log(Emax / Emin) / double(E_grid.size() - 1);
 
+#pragma omp parallel for
   for (std::size_t iE = 0; iE < E_grid.size(); iE++) {
     const auto E = E_grid.at(iE);
 
@@ -183,7 +186,8 @@ convolvedRate(const std::vector<double> &dRdE,
       tmp += f(E, Ep) * dRdE[iEp] * dEdt;
     }
     tmp *= dtE;
-    conv.push_back(tmp);
+    // conv.push_back(tmp);
+    conv.at(iE) = tmp;
   }
   return conv;
 }
