@@ -1,0 +1,68 @@
+Atom { Z = Na; }
+
+HartreeFock { core = [Ne],3s1;}
+
+Grid { 
+  r0 = 1e-7;
+  rmax = 40.0;
+  num_points = 20000;
+  b = 1.0;
+}
+
+Module::Kionisation {
+  E_range = 0.005,10.0;
+  E_steps = 256;
+  q_range = 0.0001,5.0;
+  q_steps = 1024;
+  max_L = 6;
+  method = hf;
+  hole_particle = true;
+  force_orthog = true;
+  force_rescale = false;
+  output_format = mat,gnu;
+  coupling = Vector;
+  label = "new";
+}
+
+Module::Kionisation {
+  E_range = 0.005,10.0;
+  E_steps = 256;
+  q_range = 0.0001,5.0;
+  q_steps = 1024;
+  max_L = 6;
+  method = hf;
+  hole_particle = true;
+  force_orthog = true;
+  force_rescale = false;
+  output_format = mat,gnu;
+  coupling = Scalar;
+  label = "new";
+}
+Module::Kionisation {
+  E_range = 0.005,10.0;
+  E_steps = 256;
+  q_range = 0.0001,5.0;
+  q_steps = 1024;
+  max_L = 6;
+  method = hf;
+  hole_particle = true;
+  force_orthog = true;
+  force_rescale = false;
+  output_format = mat,gnu;
+  coupling = Pseudovector;
+  label = "new";
+}
+Module::Kionisation {
+  E_range = 0.005,10.0;
+  E_steps = 256;
+  q_range = 0.0001,5.0;
+  q_steps = 1024;
+  max_L = 6;
+  method = hf;
+  hole_particle = true;
+  force_orthog = true;
+  force_rescale = false;
+  output_format = mat,gnu;
+  coupling = Pseudoscalar;
+  label = "new";
+}
