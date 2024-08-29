@@ -23,7 +23,7 @@ detector response.
 
 We define the atomic ionisation factor:
 
-$$ \tag{1}
+$$ 
 K(E,q) = \sum_{n\kappa m}^{\rm bound}\sum_{\kappa' m'}^{\rm excited}
           E_H |\langle \varepsilon\kappa'm'|\Gamma e^{i\mathbf{q}\cdot\mathbf{r}}|n\kappa m\rangle|^2
 $$
@@ -45,7 +45,7 @@ The destinction is important, and leads to a large Sommerfield-like enhancement,
 neglection of which can lead to results incorrect by many orders-of-magnitude.
 Therefore, we normalise these states on the energy scale:
 
-$$ \tag{2}
+$$ 
 \int_{\varepsilon-\delta}^{\varepsilon+\delta}
 \langle \varepsilon'\kappa'm'|\varepsilon\kappa m\rangle\ {\rm d}\varepsilon'
  = \delta_{\kappa \kappa'}\delta_{mm'}
@@ -104,7 +104,7 @@ ionisation event rates due to dark-matter electron scattering.
 For the case of a vector coupling (treating the DM particle non-relativistically),
 the cross-section may be expressed:
 
-$$ \tag{3}
+$$ 
 \frac{{\rm d}\langle\sigma v\rangle}{{\rm d} E} = \frac{\bar\sigma_e c}{2m_e c^2}
   \int {\rm d}v \frac{f(v)}{v/c}
   \int_{q_-}^{q_+} \ a_0^2 \ q {\rm d}q \ |F_\chi(q)|^2 \ K(E,q),
@@ -122,7 +122,7 @@ where
 
 The underlying event rate
 
-$$ \tag{4}
+$$ 
 \frac{{\rm d}R}{{\rm d}E} = \frac{n_T \rho_\chi}{m_\chi c^2}\frac{{\rm d}\langle\sigma v\rangle}{d E}
 $$
 
@@ -137,7 +137,7 @@ To model the detector response (energy resolution, efficiency, and acceptance),
 we follow the [XENON Collaboration, PRD **102**, 072004 (2020)](https://link.aps.org/doi/10.1103/PhysRevD.102.072004), [arXiv:2006.09721](http://arxiv.org/abs/2006.09721).
 The observable event rate, $S$, is written as a convolution of the underlying ionisation rate, $R$.
 
-$$ \tag{5}
+$$ 
 \frac{{\rm d}S}{{\rm d}E} = \epsilon(E)\int \frac{{\rm d}R}{{\rm d}E}(E')g_{\sigma_E}(E-E')\ {\rm d}E'
 $$
 
@@ -222,7 +222,7 @@ Electron-impact ionisation is a very similar problem to DM-induced ionisation.
 There exist high-quality experimental data at high $\sim \ {\rm keV}$ impact energies,
 which provide an ideal test case for testing the atomic ionisation factors.
 
-$$ \tag{6}
+$$ 
 \sigma(E_i) = \frac{4\pi \ a_0^2}{E_i}\int_0^{E_i}\int_{q_-}^{q_+} \ {\rm d}q \ \frac{K(E,q)}{q^3}\ {\rm d}E
 $$
 
@@ -232,7 +232,7 @@ where
 - $E_i = m_ev^2/2$ is the initial energy of the incident electron
 - the $K$ factor is exactly the same as in the (vector-coupled) DM case.
 
-Notice this formula is exacly the same as the DM scattering case (3), with $m_\chi\to m_e$, and a massless mediator.
+Notice this formula is exacly the same as the DM scattering case, with $m_\chi\to m_e$, and a massless mediator.
 In the case of a massless mediator, $\bar\sigma_e=16\pi a_0^2$.
 
 In particular, comparison to experiment for Xe shows our calculations are highly
